@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const port = 3000;
 
@@ -46,7 +46,27 @@ async function run() {
     app.get("/movies", async (req, res) => {
       const result = await moviesCollection.find().toArray();
       res.send(result);
-      console.log(result);
+      //   console.log(result);
+    });
+    // delete
+    app.delete("/movies/:id", async (req, res) => {
+      const id = { _id: new ObjectId(req.params.id) };
+      const result = await moviesCollection.deleteOne(id);
+      res.send(result);
+    });
+    // update
+    app.patch("/movies/:id", async (req, res) => {
+      console.log(req.body);
+      const filter = { _id: new ObjectId(req.params.id) };
+      //   console.log(req);
+      const updateDoc = {
+        $set: {
+          title: req.body.title,
+        },
+        $unset: { name: "" },
+      };
+      const result = await moviesCollection.updateOne(filter, updateDoc);
+      res.send(result);
     });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
