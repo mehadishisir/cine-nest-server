@@ -48,6 +48,7 @@ async function run() {
       res.send(result);
       //   console.log(result);
     });
+
     // delete
     app.delete("/movies/:id", async (req, res) => {
       const id = { _id: new ObjectId(req.params.id) };
@@ -60,14 +61,21 @@ async function run() {
       const filter = { _id: new ObjectId(req.params.id) };
       //   console.log(req);
       const updateDoc = {
-        $set: {
-          title: req.body.title,
-        },
+        $set: req.body,
         $unset: { name: "" },
       };
       const result = await moviesCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+
+    // get single data
+    app.get("/movies/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await moviesCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
