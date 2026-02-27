@@ -75,6 +75,15 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+    // handle favourite
+    app.post("/favourite/:id", async (req, res) => {
+      const favourite = req.body;
+      const query = { _id: new ObjectId(req.params.id) };
+      console.log(req.body);
+      const result = await moviesCollection.insertOne(favourite, query);
+      res.send(result);
+      console.log(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
