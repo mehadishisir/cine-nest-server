@@ -33,6 +33,7 @@ async function run() {
     await client.connect();
 
     const moviesCollection = client.db("cinenest").collection("movies");
+    const favouriteCollection = client.db("cinenest").collection("favourite");
     // create
     app.post("/movies", async (req, res) => {
       const movie = req.body;
@@ -76,11 +77,18 @@ async function run() {
       res.send(result);
     });
     // handle favourite
-    app.post("/favourite/:id", async (req, res) => {
+    app.post("/favourite", async (req, res) => {
       const favourite = req.body;
-      const query = { _id: new ObjectId(req.params.id) };
-      console.log(req.body);
-      const result = await moviesCollection.insertOne(favourite, query);
+      // console.log(favourite);
+      const result = await favouriteCollection.insertOne(favourite);
+      res.send(result);
+      // console.log(result);
+    });
+    // get favourite
+    app.get("/favourite", async (req, res) => {
+      const email = req.query.email;
+      const query = { userEmail: email };
+      const result = await favouriteCollection.find(query).toArray();
       res.send(result);
       console.log(result);
     });
