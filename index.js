@@ -92,6 +92,12 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+    // delete favourite
+    app.delete("/favourite/:id", async (req, res) => {
+      const id = { _id: new ObjectId(req.params.id) };
+      const result = await favouriteCollection.deleteOne(id);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
